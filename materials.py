@@ -46,7 +46,7 @@ class Material():
             
     def TOD(self, ls):
         self.make_TODfoo()
-        self.TOD = sp.lambdify(l, self.GVDfoo.subs(w, 2*np.pi*c/l))
+        self.TOD = sp.lambdify(l, self.TODfoo.subs(w, 2*np.pi*c/l))
         return self.TOD(ls)
     
     def HOD(self, ls, order=4):
@@ -139,6 +139,11 @@ FS = Material(A=A, B=B)
 A = np.array([0.683740494,0.420323613,0.58502748])
 B = np.sqrt(np.array([0.00460352869,0.0133968856,64.4932732])) * 1e-6
 FSir = Material(A=A, B=B)
+
+# https://www.heraeus.com/media/media/hca/doc_hca/products_and_solutions_8/optics/Data_and_Properties_Optics_fused_silica_EN.pdf
+A = np.array([4.76523070e-1, 6.27786368e-1, 8.72274404e-1])
+B = np.sqrt(np.array([2.84888095e-3, 1.18369052e-2, 9.56856012e1])) * 1e-6
+Infrasil = Material(A=A, B=B)
 
 A = np.array([0.79221, 0.01981, 0.15587, 0.17673, 2.06217])
 B = np.array([0.146, 0.173, 0.187, 60.61, 87.72]) * 1e-6
@@ -279,7 +284,7 @@ ZnSe = Material(A=A, B=B)
 materials = {'aBBOo':aBBOo, 'aBBOe':aBBOe, 'ADPo':ADPo, 'ADPe':ADPe,
              'BaF2':BaF2, 'BBOo':BBOo, 'BBOe':BBOe, 'BK7':BK7,
              'CaCO3o':CaCO3o, 'CaCO3e':CaCO3e, 'CaF2':CaF2, 'FS':FS,
-             'FSir':FSir, 'KBr':KBr, 'KDPo':KDPo, 'KDPe':KDPe,
+             'FSir':FSir, 'Infrasil':Infrasil, 'KBr':KBr, 'KDPo':KDPo, 'KDPe':KDPe,
              'KRS5':KRS5, 'KTPa':KTPa, 'KTPb':KTPb, 'KTPg':KTPg,
              'MgF2o':MgF2o, 'MgF2e':MgF2e, 'Sappho':Sappho, 'Sapphe':Sapphe,
              'SF1':SF1, 'SF2':SF2, 'SF4':SF4, 'SF5':SF5, 'SF6':SF6,
