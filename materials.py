@@ -106,12 +106,12 @@ B = np.array([0.10065, 29.87, 53.82]) * 1e-6
 n0 = 0.33973
 BaF2 = Material(A=A, B=B, n0=n0)
 
-A = np.array([1.151075, 0.21803, 0.656])
-B = np.sqrt(np.array([0.007142, 0.02259, 263])) * 1e-6
-BBOo = Material(A=A, B=B)
-
 A = np.array([0.90291, 0.83155, 0.76536])
 B = np.sqrt(np.array([0.003926, 0.018786, 60.01])) * 1e-6
+BBOo = Material(A=A, B=B)
+
+A = np.array([1.151075, 0.21803, 0.656])
+B = np.sqrt(np.array([0.007142, 0.02259, 263])) * 1e-6
 BBOe = Material(A=A, B=B)
 
 A = np.array([1.03961212, 0.231792344, 1.01046945])
