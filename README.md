@@ -6,4 +6,8 @@ Dispersion data for many materials, including:
 4. Third order dispersion, TOD
 5. Higher order dispersion, HOD
 
+Based off sellmeir equations mostly from refractiveindex.info.
+
+Birefringent class for angle dependence.
+
 See materials.ipynb for example usage.
