@@ -8,7 +8,7 @@ th = sp.symbols('th')
 
 class Material():
     '''
-    n^2 + 1 = n0 + l^2 * A / (l^2 - B^2) + C / (l^2 - D^2) + E * l2
+    n^2 - 1 = n0 + l^2 * A / (l^2 - B^2) + C / (l^2 - D^2) + E * l2
     Data from refractiveindex.info
     '''
     def __init__(self, A=np.array([]), B=np.array([]),
@@ -32,22 +32,22 @@ class Material():
         self.nfoo = sp.sqrt(self.nfoo)
         
     def n(self, ls):
-        self.n = sp.lambdify(l, self.nfoo)
+        self.n = sp.lambdify(l, self.nfoo, np)
         return self.n(ls)
         
     def ng(self, ls):
         self.make_dkfoo()
-        self.ng = sp.lambdify(l, self.dkfoo.subs(w, 2*np.pi*c/l) * c)
+        self.ng = sp.lambdify(l, self.dkfoo.subs(w, 2*np.pi*c/l) * c, np)
         return self.ng(ls)
         
     def GVD(self, ls):
         self.make_GVDfoo()
-        self.GVD = sp.lambdify(l, self.GVDfoo.subs(w, 2*np.pi*c/l))
+        self.GVD = sp.lambdify(l, self.GVDfoo.subs(w, 2*np.pi*c/l), np)
         return self.GVD(ls)
             
     def TOD(self, ls):
         self.make_TODfoo()
-        self.TOD = sp.lambdify(l, self.TODfoo.subs(w, 2*np.pi*c/l))
+        self.TOD = sp.lambdify(l, self.TODfoo.subs(w, 2*np.pi*c/l), np)
         return self.TOD(ls)
     
     def HOD(self, ls, order=4):
@@ -55,7 +55,7 @@ class Material():
         hod = self.kfoo
         for i in range(order):
             hod = hod.diff(w)
-        return sp.lambdify(l, hod.subs(w, 2*np.pi*c/l))(ls)
+        return sp.lambdify(l, hod.subs(w, 2*np.pi*c/l), np)(ls)
         
     def make_kfoo(self):
         if not hasattr(self, 'kfoo'):
@@ -102,22 +102,22 @@ class Birefringent():
         self.HODe = self.Mate.HOD
         
     def nth(self, ls, ths):
-        self.nth = sp.lambdify([l, th], self.nfooth)
+        self.nth = sp.lambdify([l, th], self.nfooth, np)
         return self.nth(ls, ths)
 
     def ngth(self, ls, ths):
         self.make_dkfooth()
-        self.ngth = sp.lambdify([l, th], self.dkfooth.subs(w, 2*np.pi*c/l) * c)
+        self.ngth = sp.lambdify([l, th], self.dkfooth.subs(w, 2*np.pi*c/l) * c, np)
         return self.ngth(ls, ths)
 
     def GVDth(self, ls, ths):
         self.make_GVDfooth()
-        self.GVD = sp.lambdify([l, th], self.GVDfooth.subs(w, 2*np.pi*c/l))
+        self.GVD = sp.lambdify([l, th], self.GVDfooth.subs(w, 2*np.pi*c/l), np)
         return self.GVD(ls, ths)
 
     def TODth(self, ls, ths):
         self.make_TODfooth()
-        self.TOD = sp.lambdify([l, th], self.TODfooth.subs(w, 2*np.pi*c/l))
+        self.TOD = sp.lambdify([l, th], self.TODfooth.subs(w, 2*np.pi*c/l), np)
         return self.TOD(ls, ths)
 
     def make_kfooth(self):
@@ -168,6 +168,20 @@ n0 = 2.163510 - 1
 ADPe = Material(A=A, B=B, C=C, D=D, n0=n0)
 
 ADP = Birefringent(ADPo, ADPe)
+
+C = np.array([0.2311]) * 1e-12
+D = np.sqrt(np.array([0.0688])) * 1e-6
+E = np.array([-0.00257]) * 1e12
+n0 = 5.7975 - 1
+AgGaS2o = Material(C=C, D=D, E=E, n0=n0)
+
+C = np.array([0.2230]) * 1e-12
+D = np.sqrt(np.array([0.0946])) * 1e-6
+E = np.array([-0.00261]) * 1e12
+n0 = 5.5436 - 1
+AgGaS2e = Material(C=C, D=D, E=E, n0=n0)
+
+AgGaS2 = Birefringent(AgGaS2o, AgGaS2e)
 
 A = np.array([0.8107, 0.19652, 4.52469])
 B = np.array([0.10065, 29.87, 53.82]) * 1e-6
@@ -256,6 +270,28 @@ C = np.array([0.06206, 110.80672]) * 1e-12
 D = np.sqrt(np.array([0.04763, 86.12171])) * 1e-6
 n0 = 4.59423 - 1
 KTPg = Material(C=C, D=D, n0=n0)
+
+A = np.array([1.37623, 1.06745])
+B = np.sqrt(np.array([0.0350832, 169])) * 1e-6
+n0 = 1.03132
+LiIO3o = Material(A=A, B=B, n0=n0)
+
+A = np.array([1.08807, 0.554582])
+B = np.sqrt(np.array([0.0313810, 158.76])) * 1e-6
+n0 = 0.83086
+LiIO3e = Material(A=A, B=B, n0=n0)
+
+LiIO3 = Birefringent(LiIO3o, LiIO3e)
+
+A = np.array([2.6734, 1.2290, 12.614])
+B = np.sqrt(np.array([0.01764, 0.05914, 474.6])) * 1e-6
+LiNbO3o = Material(A=A, B=B)
+
+A = np.array([2.9804, 0.5981, 8.9543])
+B = np.sqrt(np.array([0.02047, 0.0666, 416.08])) * 1e-6
+LiNbO3e = Material(A=A, B=B)
+
+LiNbO3 = Birefringent(LiNbO3o, LiNbO3e)
 
 A = np.array([0.48755108, 0.39875031, 2.3120353])
 B = np.array([0.04338408, 0.09461442, 23.793604]) * 1e-6
@@ -363,12 +399,14 @@ A = np.array([4.45813734, 0.467216334, 2.89566290])
 B = np.array([0.200859853, 0.391371166, 47.1362108]) * 1e-6
 ZnSe = Material(A=A, B=B)
 
-materials = {'aBBOo':aBBOo, 'aBBOe':aBBOe, 'aBBO':aBBO, 'ADPo':ADPo, 'ADPe':ADPe, 'ADP':ADP
-             'BaF2':BaF2, 'BBOo':BBOo, 'BBOe':BBOe, 'BBO':BBo, 'BK7':BK7,
+materials = {'aBBOo':aBBOo, 'aBBOe':aBBOe, 'aBBO':aBBO, 'ADPo':ADPo, 'ADPe':ADPe, 'ADP':ADP,
+             'AgGaS2o':AgGaS2o, 'AgGaS2e':AgGaS2e, 'AgGaS2':AgGaS2, 'BaF2':BaF2,
+             'BBOo':BBOo, 'BBOe':BBOe, 'BBO':BBO, 'BK7':BK7,
              'CaCO3o':CaCO3o, 'CaCO3e':CaCO3e, 'CaCO3':CaCO3, 'CaF2':CaF2, 'FS':FS,
              'FSir':FSir, 'Infrasil':Infrasil, 'KBr':KBr, 'KDPo':KDPo, 'KDPe':KDPe, 'KDP':KDP,
-             'KRS5':KRS5, 'KTPa':KTPa, 'KTPb':KTPb, 'KTPg':KTPg,
-             'MgF2o':MgF2o, 'MgF2e':MgF2e, 'MgF2':MgF2, 'Sappho':Sappho, 'Sapphe':Sapphe, 'Sapph':Sapph,
+             'KRS5':KRS5, 'KTPa':KTPa, 'KTPb':KTPb, 'KTPg':KTPg, 'LiIO3o':LiIO3o, 'LiIO3e':LiIO3e, 'LiIO3':LiIO3,
+             'LiNbO3o':LiNbO3o, 'LiNbO3e':LiNbO3e, 'LiNbO3':LiNbO3, 'MgF2o':MgF2o, 'MgF2e':MgF2e, 'MgF2':MgF2,
+             'Sappho':Sappho, 'Sapphe':Sapphe, 'Sapph':Sapph,
              'SF1':SF1, 'SF2':SF2, 'SF4':SF4, 'SF5':SF5, 'SF6':SF6,
              'SF10':SF10, 'SF11':SF11, 'SF14':SF14, 'SF15':SF15,
              'SF57':SF57, 'SF66':SF66, 'Si':Si, 'SiO2o':SiO2o, 'SiO2e':SiO2e, 'SiO2':SiO2,
